@@ -1,0 +1,89 @@
+<style type="text/css">
+
+div#container
+{
+	/*width:1000px*/
+}
+
+div#header
+ {
+	background-color:#99bbbb;
+	-moz-opacity:.5;
+	opacity:.5;
+	filter: alpha(opacity=80);
+}
+
+div#introduction 
+{
+	color:#FFFAFA; 
+	/*height:800px;*/ 
+	width:400px; 
+	float:left;
+}
+
+div#container2
+{
+	/*height:800px*/; 
+	width:400px; 
+	float:right;
+}
+
+div#blog
+{
+	color:black;
+	/*background-color:#EEEEEE;*/ 
+	/*height:400px;*/ 
+	width:400px; 
+	float:left;
+
+}
+
+div#homework 
+{
+	color:black;
+	/*background-color:#ffff99;*/ 
+	/*height:400px;*/ 
+	width:400px; 
+	float:left;
+}
+
+div#article 
+{
+	background-color:#99bbbb; 
+	clear:both; 
+	text-align:left;
+	-moz-opacity:.5;
+	opacity:.5;
+	filter: alpha(opacity=80);
+}
+
+div#footer 
+{
+	background-color:#99bbbb; 
+	clear:both; 
+	text-align:center;
+	-moz-opacity:.5;
+	opacity:.5;
+	filter: alpha(opacity=80);
+}
+
+h1 {margin-bottom:0;}
+h2 {margin-bottom:0; font-size:14px;}
+h3 {font-family: Comic Sans, serif;}
+ul {margin:0;}
+li {list-style:none;}
+p {text-indent: 2em;}
+op{
+	
+	filter:alpha(opacity=50);       /* IE */
+	-moz-opacity:0.5;              /* Moz + FF */
+	opacity: 0.5;                    /* 支持CSS3的浏览器（FF 1.5也支持）*/
+}
+
+op:hover {
+		filter:alpha(opacity=100);       /* IE */
+		-moz-opacity:1;              /* Moz + FF */
+		opacity: 1;                    /* 支持CSS3的浏览器（FF 1.5也支持）*/
+}
+
+</style>
