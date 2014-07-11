@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style type="text/css">
+div#container{ width:1200px}
+div#header {background-color:black; color:white;}
+div#left {height:600px; width:100px; float:left; text-align: center; vertical-align: middle; line-height:600px}
+div#newsphoto {height:600px; width:1000px; float:left; }
+div#right {height:600px; width:100px; float:left; text-align: center; vertical-align: middle; line-height:600px}
+div#footer {background-color:white; clear:both; filter:alpha(opacity=50); -moz-opacity:0.5; opacity: 0.5;  }
+div#fleft{width:600px; float:left; text-align: center;}
+div#fright{width:600px; float:left; text-align: center;}
+h1 {margin-bottom:0;}
+h2 {margin-bottom:0; font-size:14px;}
+ul {margin:0;}
+e {text-indent:5em;}
+li
+{
+	list-style:none;
+	border:2px solid;
+	border-radius:25px;
+	-moz-border-radius:25px; /* Old Firefox */
+}
+
+a img {
+    opacity: 0.8;
+    -webkit-transition: all 0.2s ease-out;
+}
+ 
+a:hover img.left {
+    opacity: 1;
+    -moz-transform: rotate(-30deg);
+    -webkit-transform: rotate(-30deg);
+}
+
+a:hover img.right {
+    opacity: 1;
+    -moz-transform: rotate(30deg);
+    -webkit-transform: rotate(30deg);
+}
+
+</style>
+<script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery/jquery-1.4.min.js"></script>
+
+<script type="text/javascript" src="news.js"></script>
+</head>
+
+<body onload="javascript:showNews();" background="img/sky.jpg">
+
+<div id="container">
+
+<div id="header" >
+<h1>新闻图片</h1>
+</div>
+
+<div id="left">
+<a>
+<img  class='left' src="img\left.gif" onclick="PreviousPage()">
+</a>
+</div>
+
+<div id="newsphoto" >
+
+
+</div>
+
+<div id="right">
+<a>
+<img class='right' src="img\right.gif"  onclick="NextPage()">
+</a>
+</div>
+
+<div id="footer">
+<h2>评论区</h2>
+<ul id="comments">
+
+</ul>
+
+<div id="fleft">
+<button onclick="PreviousComPage()" >上一页</button>
+</div>
+<div id="fright">
+<button onclick="NextComPage()" >下一页</button>
+</div>
+
+
+</div>
+
+
+
+</div>
+
+</body>
+
+</html>
