@@ -3,7 +3,7 @@ var Storage = window.localStorage;
 var  page=0, sum;
 var obj1, obj2;
 var url1 = "https://rawgit.com/rpfish/rpfish.github.four.io/master/url.json";
-var url2 ="https://rawgit.com/rpfish/rpfish.github.four.io/master/comments%20.json";
+var url2 ="https://rawgit.com/rpfish/rpfish.github.io/master/Comments%20.json";
 
     
 
