@@ -1,14 +1,24 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <style>
 button{
-	margin-left: 63px;
+	//margin-left: 80px;
 	margin-top: 30px;
-	width: 80px;
+	width: 50px;
 	height: 50px;
 	opacity: 0;
+	border-radius: 10px;
+	transition: opacity 0.5s;
 }
+#trainText, #cancelText, #warText, #endText{
+	opacity: 0;
+	transition:opacity 0.5s;
+}
+#train, #cancel{margin-left: 80px;}
+#endturn{margin-left: 15px;}
+#war{margin-left: 30px;}
 #turn{
 	margin-left: 60px;
 	margin-top: 60px;
@@ -40,6 +50,7 @@ button{
 	margin-left: 63px;
 	width: 240px;
 	overflow: auto;
+	font-family: Microsoft YaHei;
 }
 #countryMessage{
 	height: 100px;
@@ -216,7 +227,6 @@ to {left: 150px;
                 transition: all 0.5s ease-in-out; /* Browsers that Support it */
     
             }
-
 img#head {		
        position: absolute;
                 display: inline;
@@ -283,14 +293,14 @@ var map;
 var land1Text = "background: url(grass.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset";
 var land2Text = "background: url(mountain.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;";
 var land3Text = "background: url(water.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;";
-var cityText = ["background: url(country0.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;",
-				"background: url(country1.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;",
-				"background: url(country2.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;",
-				"background: url(country3.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;",
-				"background: url(country4.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;",
-				"background: url(country5.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;",
-				"background: url(country6.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;",
-				"background: url(country7.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;"];
+var cityText = ["background: url(china.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;",
+				"background: url(brazil.gif) no-repeat; width: 50px; height: 50px; border: 3px outset;",
+				"background: url(germany.gif) no-repeat; width: 50px; height: 50px; border: 3px outset;",
+				"background: url(netherlands.gif) no-repeat; width: 50px; height: 50px; border: 3px outset;",
+				"background: url(argentina.gif) no-repeat; width: 50px; height: 50px; border: 3px outset;",
+				"background: url(france.gif) no-repeat; width: 50px; height: 50px; border: 3px outset;",
+				"background: url(uruguay.gif) no-repeat; width: 50px; height: 50px; border: 3px outset;",
+				"background: url(usa.gif) no-repeat; width: 50px; height: 50px; border: 3px outset;"];
 var country = ["China", "Brazil", "Germany", "Netherlands", "Argentina", "France", "Uruguay", "USA"];
 var players;
 var cityInfo = [];
@@ -306,6 +316,8 @@ var player_USA = [];
 var tempText;
 var player_Country = [player_China, player_Brazil, player_Germany, player_Netherlands, player_Argentina, player_France, player_Uruguay, player_USA];
 var money= [0, 0, 0, 0, 0, 0, 0, 0];
+var alive=[true,true,true,true,true,true,true,true];
+var aliveNumber=8;
 var AI_position_x = [];
 var AI_position_y = [];
 function build(){
@@ -321,7 +333,6 @@ function build(){
 	$("#train")[0].disabled = true;
 	getAICoordinate();
 }
-
 function buildmap(){
 	for(var i = 0; i < totalRow; i++)//build basic map
 	{
@@ -427,6 +438,36 @@ function calculateDEF(teamA)
 	return (sum/n);
 }
 
+function calculateNumber(teamA)
+{
+	var sum=0, n=0;
+	for (var j=0; j<players.length; j++)
+		if (player_Country[teamA][j])
+		{
+			n++;
+		}
+	return (n);
+}
+
+function removeCountry(n)
+{
+	var s=$("."+country[n]);
+	$(s).removeClass("city");
+	$(s).removeClass(country[n]);
+	if($(s).hasClass(land1))
+	{
+		$(s)[0].style.cssText = land1Text;
+	}
+	else if($(s).hasClass(land2))
+	{
+		$(s)[0].style.cssText = land2Text;
+	}
+	else if($(s).hasClass(land3))
+	{
+		$(s)[0].style.cssText = land3Text;
+	}
+}
+
 function battle(teamA, teamB, Ax, Ay, Bx, By)
 {	
 	var A = ".y" + Ay + "x" + Ax;
@@ -458,7 +499,7 @@ function battle(teamA, teamB, Ax, Ay, Bx, By)
 		goal_B=0;
 	else
 		goal_B=Math.floor((goal_B-1)*10);
-	$("#message")[0].innerHTML = "<p><h1>Result:</h1></p><p><h1>"+goal_A+":"+goal_B+"</h1></p>";
+	$("#message")[0].innerHTML = "<p><h1>赛果:</h1></p><p><h1>"+goal_A+":"+goal_B+"</h1></p>";
 	var board=$("#cityInfo")[0];
 	tempText = board.innerHTML;
 	board.innerHTML = "<img id='board' src='field.jpg'/>"+ "<div id='teamA'> </div>"+"<div id='teamB'> </div>";
@@ -551,11 +592,14 @@ function selectedAction(){
 			if(newTurn)
 			{
 				$("#war")[0].style.opacity = 1;
+				$("#warText")[0].style.opacity = 1;
 				$("#train")[0].style.opacity = 1;
+				$("#trainText")[0].style.opacity = 1;
 				$("#war")[0].disabled = false;
 				$("#train")[0].disabled = false;
 			}
 			$("#endturn")[0].style.opacity = 1;
+			$("#endText")[0].style.opacity = 1;
 			$("#endturn")[0].disabled = false;
 		}
 		else
@@ -584,8 +628,11 @@ function selectedAction(){
 				}
 			}
 			$("#war")[0].style.opacity = 0;
+			$("#warText")[0].style.opacity = 0;
 			$("#train")[0].style.opacity = 0;
+			$("#trainText")[0].style.opacity = 0;
 			$("#endturn")[0].style.opacity = 0;
+			$("#endText")[0].style.opacity = 0;
 			$("#war")[0].disabled = true;
 			$("#train")[0].disabled = true;
 			$("#endturn")[0].disabled = true;
@@ -626,7 +673,7 @@ function selectedAction(){
 			}
 			else
 			{
-				$("#message")[0].innerHTML = "You cannot move to other city!";
+				$("#message")[0].innerHTML = "你不能移动到其他国家的球队上!";
 				for(i=1; i < totalCountry; i++)
 				{
 					if($(t).hasClass(country[i]))
@@ -639,7 +686,27 @@ function selectedAction(){
 							tmp_m=Math.floor(money[0]/2);
 							money[0]-=tmp_m;
 							money[i]+=tmp_m;
-							$("#message")[0].innerHTML += "You've lost $" + tmp_m + " and your best player: " + players[p].name + "!";
+							$("#message")[0].innerHTML += "战败损失金钱 $" + tmp_m + " 以及你的最佳球员: " + players[p].name + "!";
+							if (calculateNumber(0)<=0)
+							{
+								alive[0]=false;
+								removeCountry(0);
+								$("#cityInfo")[0].innerHTML = "";
+								$("#message")[0].innerHTML="Game Over!";
+								$("#cancel")[0].style.opacity = 0;
+								$("#cancelText")[0].style.opacity = 0;
+								$("#war")[0].style.opacity = 0;
+								$("#warText")[0].style.opacity = 0;
+								$("#train")[0].style.opacity = 0;
+								$("#trainText")[0].style.opacity = 0;
+								$("#endturn")[0].style.opacity = 0;
+								$("#endText")[0].style.opacity = 0;
+								$("#war")[0].disabled = true;
+								$("#train")[0].disabled = true;
+								$("#cancel")[0].disabled = true;
+								$("#endturn")[0].disabled = true;
+								return;
+							}
 						}
 						else
 						if (result==2)
@@ -648,14 +715,40 @@ function selectedAction(){
 							tmp_m=Math.floor(money[i]/2);
 							money[i]-=tmp_m;
 							money[0]+=tmp_m;
-							$("#message")[0].innerHTML += "You've won $" + tmp_m + " and their best player: " + players[p].name + "!";
+							$("#message")[0].innerHTML += "战胜获得金钱 $" + tmp_m + " 以及对方的最佳球员: " + players[p].name + "!";
+							if (calculateNumber(i)<=0)
+							{
+								alive[i]=false;
+								removeCountry(i);
+								--aliveNumber;
+								if (aliveNumber==1)
+								{
+									$("#cityInfo")[0].innerHTML = "";
+									$("#message")[0].innerHTML="胜利！游戏结束";
+									$("#cancel")[0].style.opacity = 0;
+									$("#cancelText")[0].style.opacity = 0;
+									$("#war")[0].style.opacity = 0;
+									$("#warText")[0].style.opacity = 0;
+									$("#train")[0].style.opacity = 0;
+									$("#trainText")[0].style.opacity = 0;
+									$("#endturn")[0].style.opacity = 0;
+									$("#endText")[0].style.opacity = 0;
+									$("#war")[0].disabled = true;
+									$("#train")[0].disabled = true;
+									$("#cancel")[0].disabled = true;
+									$("#endturn")[0].disabled = true;
+									return;
+								}
+							}
 						}
 					}
 				}
-				
 				$("#cancel")[0].style.opacity = 0;
+				$("#cancelText")[0].style.opacity = 0;
 				$("#war")[0].style.opacity = 0;
+				$("#warText")[0].style.opacity = 0;
 				$("#train")[0].style.opacity = 0;
+				$("#trainText")[0].style.opacity = 0;
 				//$("#endturn")[0].style.opacity = 0;
 				$("#war")[0].disabled = true;
 				$("#train")[0].disabled = true;
@@ -667,7 +760,7 @@ function selectedAction(){
 		}
 		else 
 		{
-			$("#message")[0].innerHTML = "You can only move one step in a turn!";
+			$("#message")[0].innerHTML = "一个回合只能走一步!";
 		}
 		
 	}
@@ -746,22 +839,29 @@ function playerSelected(j){
 	if(gameState != "train") return;
 	if(money[0]< players[j].atk+players[j].def)
 	{
-		$("#message")[0].innerHTML = "You don't have enough money to train this player!";
+		$("#message")[0].innerHTML = "你没有足够的金钱来训练这位球员!";
 		return;
 	}
 	var a = "#player" + j;
+	var tmp = players[j].atk+players[j].def;
 	money[0]-=players[j].atk+players[j].def;
-	players[j].atk += Math.floor(Math.random()*4-0.0001);
-	players[j].def += Math.floor(Math.random()*4-0.0001);
+	var atkplus = Math.floor(Math.random()*4-0.0001);
+	var defplus = Math.floor(Math.random()*4-0.0001)
+	players[j].atk += atkplus;
+	players[j].def += defplus;
 	$(".money")[0].innerHTML ="Money: "+money[0]+"$";
 	$(a)[0].innerHTML = "<span style='margin:20px;'>" + players[j].name +
 						"</span><span style='margin-right:20px;'>" + "ATK:" + players[j].atk + "</span><span>" + "DEF:" + players[j].def + "</span>"+
 						"<img id='head' src='img/"+players[j].url+"' ,width='100' height='100'/>";
+	$("#message")[0].innerHTML = "对 " + players[j].name + " 的训练已经结束,攻击增加 " + atkplus + "点,防守增加 " + defplus + "点,花费金钱 $" + tmp +".";
 	newTurn = false;					
 	gameState = "view";
 	$("#cancel")[0].style.opacity = 0;
+	$("#cancelText")[0].style.opacity = 0;
 	$("#war")[0].style.opacity = 0;
+	$("#warText")[0].style.opacity = 0;
 	$("#train")[0].style.opacity = 0;
+	$("#trainText")[0].style.opacity = 0;
 	$("#war")[0].disabled = true;
 	$("#train")[0].disabled = true;
 	$("#cancel")[0].disabled = true;
@@ -769,7 +869,7 @@ function playerSelected(j){
 }
 function playerOver(j){
 	if(gameState != "train") return;
-	$("#message")[0].innerHTML = "To train this player, you need to pay $" + (players[j].atk + players[j].def) + ".";
+	$("#message")[0].innerHTML = "训练此球员需要的金钱为 $" + (players[j].atk + players[j].def) + ".";
 }
 
 function moveTo(x, y){
@@ -784,8 +884,11 @@ function moveTo(x, y){
 	//if(!a.hasClass(playerCity)) b.innerHTML = b.innerHTML + "<img src=" + troopPic + "></img>";
 	//alert("Your troop have moved to (" + x + "," + y + ") !");
 	$("#cancel")[0].style.opacity = 0;
+	$("#cancelText")[0].style.opacity = 0;
 	$("#war")[0].style.opacity = 0;
+	$("#warText")[0].style.opacity = 0;
 	$("#train")[0].style.opacity = 0;
+	$("#trainText")[0].style.opacity = 0;
 	//$("#endturn")[0].style.opacity = 0;
 	$("#war")[0].disabled = true;
 	$("#train")[0].disabled = true;
@@ -802,6 +905,7 @@ function toWarMode(){
 	//alert("War mode is on!");
 	gameState = "war";
 	$("#cancel")[0].style.opacity = 1;
+	$("#cancelText")[0].style.opacity = 1;
 	$("#cancel")[0].disabled = false;
 	$("#war")[0].disabled = true;
 	$("#train")[0].disabled = true;
@@ -810,6 +914,7 @@ function toWarMode(){
 function toTrainMode(){
 	gameState = "train";
 	$("#cancel")[0].style.opacity = 1;
+	$("#cancelText")[0].style.opacity = 1;
 	$("#cancel")[0].disabled = false;
 	$("#war")[0].disabled = true;
 	$("#train")[0].disabled = true;
@@ -818,6 +923,7 @@ function toTrainMode(){
 function toViewMode(){
 	gameState = "view";
 	$("#cancel")[0].style.opacity = 0;
+	$("#cancelText")[0].style.opacity = 0;
 	$("#cancel")[0].disabled = true;
 	$("#war")[0].disabled = false;
 	$("#train")[0].disabled = false;
@@ -951,7 +1057,13 @@ function AIaction(n)
 					tmp_m=Math.floor(money[n]/2);
 					money[n]-=tmp_m;
 					money[m]+=tmp_m;
-					$("#countryMessage")[0].innerHTML += country[n] + "is beaten by " + country[m] + ", lose their best player: " + players[p].name + "!<br><br>";
+					$("#countryMessage")[0].innerHTML = country[n] + " 被 " + country[m] + " 击败,失去了他们的最佳球员: " + players[p].name + "!<br><br>" + $("#countryMessage")[0].innerHTML;
+					if (calculateNumber(n)<=0)
+					{
+						alive[n]=false;
+						removeCountry(n);
+						--aliveNumber;
+					}
 				}
 				else
 					if (result==1)
@@ -964,7 +1076,13 @@ function AIaction(n)
 							tmp_m=Math.floor(money[m]/2);
 							money[m]-=tmp_m;
 							money[n]+=tmp_m;
-							$("#countryMessage")[0].innerHTML += country[n] + " beat " + country[m] + ", get " + country[m] + "'s best player: " + players[p].name + "!<br><br>";
+							$("#countryMessage")[0].innerHTML = country[n] + " 打败了 " + country[m] + ", 得到了 " + country[m] + " 的最佳球员: " + players[p].name + "!<br><br>" + $("#countryMessage")[0].innerHTML;
+							if (calculateNumber(m)<=0)
+							{
+								alive[m]=false;
+								removeCountry(m);
+								--aliveNumber;
+							}
 					}
 				break;
 			}
@@ -995,7 +1113,7 @@ function endTurn(){
 		
 	//alert("You've recived $" + rm + " from your sponsors in the new turn!");
 	$("#message")[0].innerHTML = "";
-	$("#message")[0].innerHTML += "You've recived $" + rm + " from your sponsors in the new turn!";
+	$("#message")[0].innerHTML += "你在新的一回合中收到了来自赞助商的赞助 $" + rm + " !";
 	gameState = "view";
 	newTurn = true;
 	totalTurn++;
@@ -1011,19 +1129,16 @@ function endTurn(){
 </div>
 <div id="command" class="side">
 <p id="turn"></p>
-<button id="train">Train</button>
-<button id="war">War</button>
-<button id="cancel">Cancel</button>
-<button id="endturn">End turn</button>
+<button id="train" style="background: url(train.jpg)"></button><span id="trainText">Train</span>
+<button id="war" style="background: url(war.jpg)"></button><span id="warText">War</span>
+<button id="cancel" style="background: url(cancel.jpg)"></button><span id="cancelText">Cancel</span>
+<button id="endturn" style="background: url(endturn.jpg)"></button><span id="endText">End</span>
 <p style="margin-top:18px; margin-right:0px; margin-bottom:0px; margin-left:50px; font-family:Century Gothic;">Message:</p>
-<p id="message">Welcome!</p>
+<p id="message">欢迎!</p>
 <p id="countryMessage"></p>
 </div>
 <table id="map">
 </table>
-
-
-
 </body>
 <audio autoplay>   <source src='We Are One.mp3'>  </audio>
 </html>
