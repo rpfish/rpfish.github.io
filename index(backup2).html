@@ -1,0 +1,471 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+button{
+	margin-left: 63px;
+	margin-top: 30px;
+	width: 80px;
+	height: 50px;
+	opacity: 0;
+}
+#turn{
+	margin-left: 60px;
+	margin-top: 60px;
+	font-family: arial;
+	font-size: 18px;
+}
+#map{
+	border: 3px outset black;
+	margin: 0 auto;
+	overflow: hidden;
+	height: 100%;
+}
+#cityInfo{
+	float: left;
+	width: 350px;
+	height: 600px;
+	border: 3px outset black;
+	//background-color: black;
+}
+#command{
+	float: right;
+	width: 350px;
+	height: 600px;
+	//background-color: black;
+}
+.countryName{
+	margin: 20px;
+	font-family: Arial;
+	font-size: 18px;
+}
+.side{
+	font-family: Arial;
+	font-size: 18px;
+	width: 350px;
+	height: 600px;
+	//border: 3px outset black;
+	background: url(green_frame.jpg);
+}
+
+#map tr  td> div {		
+	font-weight:bold;
+                width: 50px;
+                min-height: 25px;
+    position: absolute;
+                display: inline;
+                margin-left: 60px;
+                padding: 5px;
+    visibility:hidden;
+                opacity: 0;
+                margin-top: -25px;
+    background: #F0F8FF;
+    font-size:1em;
+    
+    /* Setting the border-radius property for all Browsers */
+                -moz-border-radius: 5px; /* Firefox */
+                -webkit-border-radius: 5px; /* Safari and Chrome */
+                border-radius: 5px; /* Browsers that Support it like Opera */
+    
+    /* Setting the box-shadow property for all Browsers */
+                -moz-box-shadow: 0 0 8px gray; /* Firefox */
+                -webkit-box-shadow: 0 0 8px gray; /* Safari and Chrome */
+                 filter: progid:DXImageTransform.Microsoft.Shadow(color='#272229', Direction=135, Strength=3); /* IE */
+                box-shadow: 0 0 8px gray; /* Browsers that Support it like Opera */
+    /* Setting the transition property for all Browsers */
+                -moz-transition: all 0.5s ease-in-out; /* Firefox */
+                -webkit-transition: all 0.5s ease-in-out; /* Safari and Chrome */
+                -o-transition: all 0.5s ease-in-out; /* Opera */
+                transition: all 0.5s ease-in-out; /* Browsers that Support it */
+    
+            }
+            
+   
+#map tr  td:hover > div {
+    visibility:visible;
+    opacity: 0.8;
+    margin-top: -25px;
+    
+    /* Setting the transition property for all Browsers */
+				-moz-transition: all 0.5s ease-in-out; /* Firefox */
+                -webkit-transition: all 0.5s ease-in-out; /* Safari and Chrome */
+                -o-transition: all 0.5s ease-in-out;  /* Opera */
+                transition: all 0.5s ease-in-out; /* Browsers that Support it */
+    
+            }
+
+img#head {		
+       position: absolute;
+                display: inline;
+                margin-left: 60px;
+                padding: 5px;
+    visibility:hidden;
+                opacity: 0;
+                margin-top: -25px;
+    background: #F0F8FF;
+    font-size:1em;
+    
+    /* Setting the border-radius property for all Browsers */
+                -moz-border-radius: 5px; /* Firefox */
+                -webkit-border-radius: 5px; /* Safari and Chrome */
+                border-radius: 5px; /* Browsers that Support it like Opera */
+    
+    /* Setting the box-shadow property for all Browsers */
+                -moz-box-shadow: 0 0 8px gray; /* Firefox */
+                -webkit-box-shadow: 0 0 8px gray; /* Safari and Chrome */
+                 filter: progid:DXImageTransform.Microsoft.Shadow(color='#272229', Direction=135, Strength=3); /* IE */
+                box-shadow: 0 0 8px gray; /* Browsers that Support it like Opera */
+    /* Setting the transition property for all Browsers */
+                -moz-transition: all 0.5s ease-in-out; /* Firefox */
+                -webkit-transition: all 0.5s ease-in-out; /* Safari and Chrome */
+                -o-transition: all 0.5s ease-in-out; /* Opera */
+                transition: all 0.5s ease-in-out; /* Browsers that Support it */
+    
+            }
+            
+   
+div :hover > img#head {
+    visibility:visible;
+    opacity: 1;
+    margin-top: -25px;
+    
+    /* Setting the transition property for all Browsers */
+				-moz-transition: all 0.5s ease-in-out; /* Firefox */
+                -webkit-transition: all 0.5s ease-in-out; /* Safari and Chrome */
+                -o-transition: all 0.5s ease-in-out;  /* Opera */
+                transition: all 0.5s ease-in-out; /* Browsers that Support it */
+    
+            }			
+			
+</style>
+<script src="jquery-2.1.1.js"></script>
+<script>
+var player_x, player_y;
+var player_troop_x, player_troop_y;
+var totalCountry = 8;
+var totalRow = 10;
+var totalColumn = 10;
+var totalTurn = 1;
+var newTurn = true;
+var land1 = "grass";
+var land2 = "mountain";
+var land3 = "water";
+var city = "city";
+var playerCity = "playerCity";
+var selected = "selected";
+var over = "over";
+var gameState = "view";
+var troopPic = "gb.gif";
+var map;
+var land1Text = "background: url(grass.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset";
+var land2Text = "background: url(mountain.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;";
+var land3Text = "background: url(water.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;";
+var cityText = ["background: url(country0.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;",
+				"background: url(country1.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;",
+				"background: url(country2.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;",
+				"background: url(country3.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;",
+				"background: url(country4.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;",
+				"background: url(country5.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;",
+				"background: url(country6.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;",
+				"background: url(country7.jpg) no-repeat; width: 50px; height: 50px; border: 3px outset;"];
+var country = ["China", "Brazil", "Germany", "Netherlands", "Argentina", "France", "Uruguay", "USA"];
+var players;
+var cityInfo = [];
+var pcityText = cityText[0];
+var player_China = [];
+var player_Brazil = [];
+var player_Germany = [];
+var player_Netherlands = [];
+var player_Argentina = [];
+var player_France = [];
+var player_Uruguay = [];
+var player_USA = [];
+var player_Country = [player_China, player_Brazil, player_Germany, player_Netherlands, player_Argentina, player_France, player_Uruguay, player_USA];
+function build(){
+	$.getJSON("players.json", function(jsonobj){players = jsonobj.player; assignPlayer();});
+	buildmap();
+	$("#war").bind("click", toWarMode);
+	$("#cancel").bind("click", toViewMode);
+	$("#train").bind("click", toTrainMode);
+	$("#endturn").bind("click", endTurn);
+	$("#turn")[0].innerHTML = "Turn: " + totalTurn;
+	$("#war")[0].disabled = true;
+	$("#cancel")[0].disabled = true;
+	$("#train")[0].disabled = true;
+}
+function buildmap(){
+	for(var i = 0; i < totalRow; i++)//build basic map
+	{
+		var y = document.createElement("tr");
+		y.className = "y" + String(i);
+		for(var j = 0; j < totalColumn; j++)
+		{
+			var x = document.createElement("td");
+			x.className = "y" + String(i) + "x" + String(j);
+			x.onclick = selectedAction;
+			x.onmouseover = overAction;
+			var ran = Math.random();
+			if(ran < 5/6)
+			{
+				x.className = land1 + " " + x.className;
+				x.style.cssText = land1Text;
+			}
+			else if(ran >= 5/6 && ran < 11/12)
+			{
+				x.className = land2 + " " + x.className;
+				x.style.cssText = land2Text;
+			}
+			else
+			{
+				x.className = land3 + " " + x.className;
+				x.style.cssText = land3Text;
+			}
+			x.innerHTML="<div>("+String(j) + "," + String(i)+")</div>"
+			y.appendChild(x);
+		}
+		$("#map")[0].appendChild(y);
+	}
+	for(var i = 0; i < totalCountry; i++)//Build cities
+	{
+		var x = Math.floor(Math.random() * 10 - 0.001);
+		var y = Math.floor(Math.random() * 10 - 0.001);
+		var label = ".y" + String(y) + "x" + String(x);
+		var target = $(label)[0];
+		while($(label).hasClass(city))
+		{
+			x = Math.floor(Math.random() * 10 - 0.001);
+			y = Math.floor(Math.random() * 10 - 0.001);
+			label = ".y" + String(y) + "x" + String(x);
+			target = $(label)[0];
+		}
+		target.className = country[i] + " " + city + " " + "y" + String(y) + "x" + String(x);
+		target.style.cssText = cityText[i];
+		if(i == 0)
+		{
+			player_x = x;
+			player_y = y;
+			player_troop_x = x;
+			player_troop_y = y;
+			target.className = playerCity + " " + target.className;
+			target.style.cssText = pcityText;
+		}
+	}
+}
+function assignPlayer(){
+	for(var i = 0; i < totalCountry; i++)
+	{	
+		for(var j = 0; j < 200; j++) player_Country[i][j] = 0;
+		for(var j = 0; j < players.length; j++)
+		{
+			if(players[j].country == country[i])
+			{
+				player_Country[i][j] = 1;
+			}
+		}
+	}
+}
+function savemap(){
+	map = $("#map")[0];
+}
+function loadmap(){
+	var m = $("#map")[0];
+	m.remove();
+	document.body.appendChild(map);
+}
+function selectedAction(){
+	if(gameState == "view")
+	{
+		var s = $(".selected");
+		if(s.length != 0)
+		{
+			for(var i = 0; i < s.length; i++)
+			{
+				s[i].style.border = "3px outset";
+			}
+			s.removeClass(selected);
+		}
+		this.className = selected + " " + this.className;
+		this.style.border = "3px outset red";
+		s = $(".selected");
+		if(s.hasClass(playerCity))
+		{
+			if(newTurn)
+			{
+				$("#war")[0].style.opacity = 1;
+				$("#train")[0].style.opacity = 1;
+				$("#war")[0].disabled = false;
+				$("#train")[0].disabled = false;
+			}
+			$("#endturn")[0].style.opacity = 1;
+			$("#endturn")[0].disabled = false;
+		}
+		else
+		{
+			$("#war")[0].style.opacity = 0;
+			$("#train")[0].style.opacity = 0;
+			$("#endturn")[0].style.opacity = 0;
+			$("#war")[0].disabled = true;
+			$("#train")[0].disabled = true;
+			$("#endturn")[0].disabled = true;
+		}
+	}
+	else if(gameState == "war")
+	{
+		if(!newTurn) return;
+		//get coordinate
+		var c = this.className;
+		var y = Number(c.substring(c.length - 3, c.length - 2));
+		var x = Number(c.substring(c.length - 1, c.length));
+		//move judgement
+		if(canMove(player_troop_x, player_troop_y, x, y))
+		{
+			if($("td img").length != 0) $("td img")[0].remove();
+			moveTo(x, y);
+		}
+		else alert("You can only move one step in a turn!");
+	}
+}
+function overAction(){
+	var o = $(".over");
+	if(o.length != 0)
+	{
+		for(var i = 0; i < o.length; i++)
+		{
+			o[i].style.border = "3px outset";
+		}
+		o.removeClass(over);
+	}
+	this.className = over + " " + this.className;
+	this.style.border = "3px outset red";
+	var s = $(".selected");
+	if(s.length != 0) s[0].style.border = "3px outset red";
+	o = $(".over");
+	var i = 0;
+	if($("[class*=selected][class*=playerCity]").length == 0 && gameState != "train")
+	{
+		$("#cityInfo")[0].innerHTML = "<p class='countryName'></p>";
+		for(i; i < totalCountry; i++)
+		{
+			if(o.hasClass(country[i]))
+			{
+				$(".countryName")[0].innerHTML = country[i];
+				for(var j = 0; j < 200; j++)
+				{
+					if(player_Country[i][j] == 1)
+					{
+						$("#cityInfo")[0].innerHTML = $("#cityInfo")[0].innerHTML + "<div id='player" + j + "' onclick=playerSelected(" + j + ") style='border-bottom: 1px solid black;'><span style='margin:20px;'>" + players[j].name +
+						"</span><span style='margin-right:20px;'>" + "ATK:" + players[j].atk + "</span><span>" + "DEF:" + players[j].def + "</span>"+
+						"<img id='head' src='img/"+players[j].url+"' ,width='100' height='100'"+"</div>";
+					}
+				}
+				break;
+			}
+	}
+		if(i == totalCountry) $("#cityInfo")[0].innerHTML = "<p class='countryName'></p>";
+	}
+}
+function getCoordinate(x, y){
+	var c = this.className;
+	y = c.substring(c.length - 3, c.length - 2);
+	x = c.substring(c.length - 1, c.length);
+}
+function canMove(x0, y0, x1, y1){
+	if(x1 == x0)
+	{
+		if(y1 != y0 + 1 && y1 != y0 - 1) return false;
+		else return true;
+	}
+	else if(x1 == x0 + 1 || x1 == x0 - 1)
+	{
+		if(y1 != y0) return false;
+		else return true;
+	}
+	else return false;
+}
+function playerSelected(j){
+	if(gameState != "train") return;
+	var a = "#player" + j;
+	players[j].atk += 1;
+	players[j].def += 1;
+	$(a)[0].innerHTML = "<span style='margin:20px;'>" + players[j].name +
+						"</span><span style='margin-right:20px;'>" + "ATK:" + players[j].atk + "</span><span>" + "DEF:" + players[j].def + "</span>"+
+						"<img id='head' src='img/"+players[j].url+"' ,width='100' height='100'"+"</div>";
+	newTurn = false;					
+	gameState = "view";
+	$("#cancel")[0].style.opacity = 0;
+	$("#war")[0].style.opacity = 0;
+	$("#train")[0].style.opacity = 0;
+	$("#war")[0].disabled = true;
+	$("#train")[0].disabled = true;
+	$("#cancel")[0].disabled = true;
+	$("#endturn")[0].disabled = false;	
+}
+function moveTo(x, y){
+	player_troop_x = x;
+	player_troop_y = y;
+	var a = searchByXY(player_troop_x, player_troop_y);
+	var b = searchByXY(player_troop_x, player_troop_y)[0];
+	if(!a.hasClass(playerCity)) b.innerHTML = b.innerHTML + "<img src=" + troopPic + "></img>";
+	//alert("Your troop have moved to (" + x + "," + y + ") !");
+	$("#cancel")[0].style.opacity = 0;
+	$("#war")[0].style.opacity = 0;
+	$("#train")[0].style.opacity = 0;
+	$("#war")[0].disabled = true;
+	$("#train")[0].disabled = true;
+	$("#cancel")[0].disabled = true;
+	$("#endturn")[0].disabled = false;
+	gameState = "view";
+	newTurn = false;
+}
+function searchByXY(x, y){
+	var search = "." + "y" + y + "x" + x;
+	return $(search);
+}
+function toWarMode(){
+	//alert("War mode is on!");
+	gameState = "war";
+	$("#cancel")[0].style.opacity = 1;
+	$("#cancel")[0].disabled = false;
+	$("#war")[0].disabled = true;
+	$("#train")[0].disabled = true;
+	$("#endturn")[0].disabled = true;
+}
+function toTrainMode(){
+	gameState = "train";
+	$("#cancel")[0].style.opacity = 1;
+	$("#cancel")[0].disabled = false;
+	$("#war")[0].disabled = true;
+	$("#train")[0].disabled = true;
+	$("#endturn")[0].disabled = true;
+}
+function toViewMode(){
+	gameState = "view";
+	$("#cancel")[0].style.opacity = 0;
+	$("#cancel")[0].disabled = true;
+	$("#war")[0].disabled = false;
+	$("#train")[0].disabled = false;
+	$("#endturn")[0].disabled = false;
+}
+function endTurn(){
+	newTurn = true;
+	totalTurn++;
+	$(".playerCity")[0].onclick();
+	$("#turn")[0].innerHTML = "Turn: " + totalTurn;
+}
+</script>
+</head>
+<body style="height: 100%;" onload=build()>
+<div id="cityInfo">
+<p class="countryName"></p>
+</div>
+<div id="command" class="side">
+<p id="turn"></p>
+<button id="train">Train</button>
+<button id="war">War</button>
+<button id="cancel">Cancel</button>
+<button id="endturn">End turn</button>
+</div>
+<table id="map">
+</table>
+</body>
+</html>
